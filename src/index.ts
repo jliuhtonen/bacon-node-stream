@@ -31,23 +31,27 @@ interface BaconReadableEvent {
   value: any
 }
 
-class BaconReadable<A> extends Readable {
+class BaconReadable extends Readable {
   private awaitingData: boolean = false
   private buffer: BaconReadableEvent[] = []
   private unsubscribeStream: () => void
 
-  constructor(options: ReadableOptions, stream: Bacon.EventStream<any, A>) {
+  constructor(options: ReadableOptions, stream: Bacon.EventStream<any, any>) {
     super(options)
     this.unsubscribeStream = stream.subscribe(event => {
       if (event.isEnd()) {
+        if (this.awaitingData) {
+          this.pushBuffer()
+        }
         this.push(null)
         return Bacon.noMore
       }
 
       if (event.isError()) {
-        this.buffer.push({ type: 'error', value: event.value })
+        const errorEvent = event as Bacon.Error<any>
+        this.buffer.push({ type: 'error', value: errorEvent.error })
       } else if (event.hasValue()) {
-        this.buffer.push({ type: 'value', value: event.value })
+        this.buffer.push({ type: 'value', value: event.value() })
       }
 
       if (this.awaitingData) {
