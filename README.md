@@ -1,6 +1,6 @@
 # bacon-node-stream
 
-Convert Node.js readable streams to Bacon streams and vice versa. Stream some data from database to HTTP response, manipulating it with Bacon combinators in-between.
+Convert Node.js readable streams to Bacon streams and vice versa. Stream some data from database to HTTP response, manipulating it with Bacon combinators in-between, for example.
 
 ## Toy example
 
