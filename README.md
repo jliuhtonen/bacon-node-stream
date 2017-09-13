@@ -4,7 +4,7 @@ Convert Node.js readable streams to Bacon streams and vice versa. Stream some da
 
 ## Toy example
 
-Let's say that you want to print user's input from in a colorful fashion without vowels, stop with '.' and cause an error with 'q':
+Let's say that you want to print user's input from stdin a colorful fashion without vowels, stop with '.' and cause an error with 'q':
 
 ```javascript
 const Bacon = require('baconjs')
