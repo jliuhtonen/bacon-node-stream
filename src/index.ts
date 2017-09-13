@@ -22,8 +22,8 @@ export function readableToBacon(stream: Readable): Bacon.EventStream<any, any> {
   })
 }
 
-export function baconToReadable<A>(stream: Bacon.EventStream<any, A>): Readable {
-  return new BaconReadable({}, stream)
+export function baconToReadable(stream: Bacon.EventStream<any, any>, options?: ReadableOptions): Readable {
+  return new BaconReadable(options || {}, stream)
 }
 
 interface BaconReadableEvent {
@@ -76,6 +76,8 @@ class BaconReadable extends Readable {
       const {type: eventType, value} = this.buffer.shift()!
       if (eventType === 'error') {
         this.emit('error', value)
+      } else if (eventType === 'value' && value === null) {
+        this.emit('error', new Error('Encountered null value in Bacon stream, readable stream cannot contain nulls'))
       } else {
         acceptsMoreValues = this.push(value)
       }
