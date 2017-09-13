@@ -34,11 +34,10 @@ interface BaconReadableEvent {
 class BaconReadable extends Readable {
   private awaitingData: boolean = false
   private buffer: BaconReadableEvent[] = []
-  private unsubscribeStream: () => void
 
   constructor(options: ReadableOptions, stream: Bacon.EventStream<any, any>) {
     super(options)
-    this.unsubscribeStream = stream.subscribe(event => {
+    stream.subscribe(event => {
       const streamEnded = event.isEnd()
       if (streamEnded) {
         this.buffer.push({ type: 'end', value: null })
