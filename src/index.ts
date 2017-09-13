@@ -27,7 +27,7 @@ export function baconToReadable<A>(stream: Bacon.EventStream<any, A>): Readable 
 }
 
 interface BaconReadableEvent {
-  type: 'value' | 'error'
+  type: 'value' | 'error' | 'end'
   value: any
 }
 
@@ -39,15 +39,10 @@ class BaconReadable extends Readable {
   constructor(options: ReadableOptions, stream: Bacon.EventStream<any, any>) {
     super(options)
     this.unsubscribeStream = stream.subscribe(event => {
-      if (event.isEnd()) {
-        if (this.awaitingData) {
-          this.pushBuffer()
-        }
-        this.push(null)
-        return Bacon.noMore
-      }
-
-      if (event.isError()) {
+      const streamEnded = event.isEnd()
+      if (streamEnded) {
+        this.buffer.push({ type: 'end', value: null })
+      } else if (event.isError()) {
         const errorEvent = event as Bacon.Error<any>
         this.buffer.push({ type: 'error', value: errorEvent.error })
       } else if (event.hasValue()) {
@@ -56,6 +51,12 @@ class BaconReadable extends Readable {
 
       if (this.awaitingData) {
         this.pushBuffer()
+      }
+
+      if (streamEnded) {
+        return Bacon.noMore
+      } else {
+        return undefined
       }
     })
   }
