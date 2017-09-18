@@ -1,13 +1,13 @@
 import * as Bacon from 'baconjs'
 import { Readable, PassThrough, ReadableOptions } from 'stream'
 
-export function readableToBacon(stream: Readable): Bacon.EventStream<any, any> {
+export function readableToBacon(stream: Readable, options?: ReadableOptions): Bacon.EventStream<any, any> {
   return Bacon.fromBinder(sink => {
     const sinkValue = (value: any) => sink(value)
     const sinkError = (err: Error) => sink(new Bacon.Error(err))
     const sinkEnd = () => sink(new Bacon.End())
 
-    const passthrough = new PassThrough()
+    const passthrough = new PassThrough(options || {})
     passthrough.on('data', sinkValue)
     passthrough.on('error', sinkError)
     passthrough.on('close', sinkEnd)
