@@ -3,9 +3,11 @@
   "version": "0.1.0",
   "description": "Convert between Bacon.js event streams and Node readable streams",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "test": "mocha",
-    "compile": "tsc"
+    "compile": "tsc",
+    "prepublish": "npm run compile && npm run test"
   },
   "keywords": [
     "node",
@@ -21,8 +23,11 @@
   },
   "devDependencies": {
     "@types/baconjs": "0.7.33",
+    "@types/bluebird": "3.5.11",
+    "@types/mocha": "^2.2.43",
     "@types/node": "8.0.28",
     "baconjs": "0.7.95",
+    "bluebird": "^3.5.0",
     "mocha": "3.5.3",
     "ts-node": "3.3.0",
     "typescript": "2.5.2"
