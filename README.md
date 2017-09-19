@@ -1,33 +1,23 @@
 # bacon-node-stream
 
-Convert Node.js readable streams to Bacon streams and vice versa. Stream some data from database to HTTP response, manipulating it with Bacon combinators in-between, for example.
+Utility for creating [Node.js readable streams](https://nodejs.org/api/stream.html#stream_readable_streams) from [Bacon streams](http://baconjs.github.io/) and vice versa.
 
-## Toy example
+## Usage
 
-Let's say that you want to print user's input from stdin a colorful fashion without vowels, stop with '.' and cause an error with 'q':
+Install this package and `baconjs`, that is this package's peer dependency.
 
-```javascript
-const Bacon = require('baconjs')
-const BaconNodeStream = require('bacon-node-stream')
-const stdin = process.stdin
-stdin.setRawMode(true)
-stdin.resume()
-stdin.setEncoding('utf8')
+### API
 
-const vowels = ['a', 'e', 'i', 'o', 'u', 'y', 'ä', 'ö']
-
-const inputS = BaconNodeStream.readableToBacon(stdin).map(buf => buf.toString())
-const noVowelsS = inputS.filter(l => !vowels.includes(l))
-const colorfulS = noVowelsS.flatMap(c => {
-  if (c === 'q') {
-    return new Bacon.Error(new Error('do not press q'))
-  }
-  const color = Math.round((Math.random() * 100)) % 7
-  return Bacon.once('\x1b[3' + color + 'm' + c)
-}).takeUntil(inputS.filter(c => c === '.'))
-
-BaconNodeStream.baconToReadable(colorfulS)
-  .on('error', e => console.log('error', e))
-  .pipe(process.stdout)
+```typescript
+readableToBacon(stream: Readable, options?: ReadableOptions): Bacon.EventStream<any, any>
 ```
 
+Creates a new Node.js stream that is exposed as a Bacon event stream and pipes `stream` into it. Use this function for creating a Bacon EventStream from a Readable stream. You must provide the options accordingly, so if `stream` uses object mode, you must also specify it here, and so on. 
+
+Note to TypeScript users: `Readable`'s values are not typed, so you must cast or determine the correct type yourself (use `.map()`).
+
+```typescript
+baconToReadable(stream: Bacon.EventStream<any, any>, options?: ReadableOptions): Readable {
+```
+
+Wraps a Bacon event stream as a Node.js Readable stream. If the Readable is paused, _all values and the possible <end> event of the stream are buffered until the Readable is resumed_. The exception to this are error events, that are emitted immediately when they occur in the Bacon stream. Remember to provide options if your stream uses the object mode.
