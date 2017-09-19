@@ -17,6 +17,7 @@
     "bacon"
   ],
   "author": "Janne Liuhtonen",
+  "repository": "https://github.com/jliuhtonen/bacon-node-stream.git",
   "license": "MIT",
   "peerDependencies": {
     "baconjs": ">= 0.7.95 < 0.8"
