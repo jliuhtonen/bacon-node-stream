@@ -1,13 +1,13 @@
 {
   "name": "bacon-node-stream",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "Convert between Bacon.js event streams and Node readable streams",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "test": "npm run compile && mocha",
     "compile": "tsc",
-    "prepublish": "npm run test"
+    "prepublish": "npm run compile"
   },
   "keywords": [
     "node",
