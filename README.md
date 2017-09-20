@@ -20,4 +20,4 @@ Note to TypeScript users: `Readable`'s values are not typed, so you must cast or
 baconToReadable(stream: Bacon.EventStream<any, any>, options?: ReadableOptions): Readable {
 ```
 
-Wraps a Bacon event stream as a Node.js Readable stream. If the Readable is paused, _all values and the possible end event of the stream are buffered until the Readable is resumed_. The exception to this are error events, that are emitted immediately when they occur in the Bacon stream. Remember to provide options if your stream uses the object mode.
+Wraps a Bacon event stream as a Node.js Readable stream. If the Readable is paused, _all values, errors and the possible end event of the stream are buffered until the Readable is resumed_. Remember to provide options if your stream uses the object mode.
